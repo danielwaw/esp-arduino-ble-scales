@@ -32,7 +32,7 @@ bool EclairScales::connect() {
 
     subscribeToNotifications();
     RemoteScales::setWeight(0.f);
-    lastHeartbeat = millis();  // 初始化心跳时间戳
+    lastHeartbeat = millis();  // Initialize the heartbeat timestamp
     return true;
 }
 
@@ -45,13 +45,22 @@ bool EclairScales::isConnected() {
 }
 
 void EclairScales::update() {
-    sendHeartbeat();
+    // Check if the device is connected; if not, attempt to reconnect
+    if (!isConnected()) {
+        RemoteScales::log("Device disconnected. Attempting to reconnect...\n");
+        if (connect()) {
+            lastHeartbeat = millis();  // Reset the heartbeat timer after reconnecting
+            RemoteScales::log("Reconnected to Eclair scale successfully.");
+        }
+    } else {
+        sendHeartbeat();  // Send the heartbeat signal if still connected
+    }
 }
 
 bool EclairScales::tare() {
     if (!isConnected()) return false;
     uint8_t tareCommand[2] = { static_cast<uint8_t>(EclairMessageType::TARE_COMMAND), 0x01 };
-    uint8_t checksum = calculateXOR(&tareCommand[1], 1);  // 计算校验
+    uint8_t checksum = calculateXOR(&tareCommand[1], 1);  // Calculate checksum
     uint8_t message[3] = { tareCommand[0], tareCommand[1], checksum };
     configCharacteristic->writeValue(message, sizeof(message), true);
     RemoteScales::log("Sent tare command\n");
@@ -85,12 +94,12 @@ bool EclairScales::performConnectionHandshake() {
 }
 
 void EclairScales::sendMessage(EclairMessageType msgType, const uint8_t* data, size_t dataLength, bool waitResponse) {
-    size_t totalLength = 1 + dataLength + 1; // 头部 + 数据 + 校验
+    size_t totalLength = 1 + dataLength + 1; // Header + Data + Checksum
     auto bytes = std::make_unique<uint8_t[]>(totalLength);
-    bytes[0] = static_cast<uint8_t>(msgType); // 消息类型
-    memcpy(bytes.get() + 1, data, dataLength); // 数据部分
-    uint8_t checksum = calculateXOR(bytes.get() + 1, dataLength); // 计算校验，仅对数据部分
-    bytes[totalLength - 1] = checksum; // 添加校验字节
+    bytes[0] = static_cast<uint8_t>(msgType); // Message type
+    memcpy(bytes.get() + 1, data, dataLength); // Data part
+    uint8_t checksum = calculateXOR(bytes.get() + 1, dataLength); // Calculate checksum for the data part
+    bytes[totalLength - 1] = checksum; // Add checksum byte
 
     RemoteScales::log("Sending message: %s\n", RemoteScales::byteArrayToHexString(bytes.get(), totalLength).c_str());
 
@@ -110,14 +119,14 @@ void EclairScales::notifyCallback(NimBLERemoteCharacteristic* characteristic, ui
 }
 
 void EclairScales::handleDataNotification(uint8_t* data, size_t length) {
-    if (length < 10) { // 头部（1字节）+ 数据（8字节）+ 校验（1字节）
+    if (length < 10) { // Header (1 byte) + Data (8 bytes) + Checksum (1 byte)
         RemoteScales::log("Data notification length too short\n");
         return;
     }
 
     uint8_t header = data[0];
     uint8_t checksum = data[length - 1];
-    uint8_t calculatedChecksum = calculateXOR(&data[1], length - 2); // 排除头部和校验字节
+    uint8_t calculatedChecksum = calculateXOR(&data[1], length - 2); // Exclude header and checksum byte
 
     if (calculatedChecksum != checksum) {
         RemoteScales::log("Invalid checksum in data notification: calculated %02X, received %02X\n", calculatedChecksum, checksum);
@@ -126,8 +135,8 @@ void EclairScales::handleDataNotification(uint8_t* data, size_t length) {
 
     if (header == static_cast<uint8_t>(EclairMessageType::WEIGHT)) {
         int32_t rawWeight;
-        memcpy(&rawWeight, &data[1], 4); // 假设小端序
-        float weight = rawWeight / 1000.0f; // 转换为克
+        memcpy(&rawWeight, &data[1], 4); // Assuming little-endian
+        float weight = rawWeight / 1000.0f; // Convert to grams
         RemoteScales::setWeight(weight);
     } else if (header == static_cast<uint8_t>(EclairMessageType::FLOW_RATE)) {
         RemoteScales::log("Received flow rate data\n");
@@ -137,7 +146,7 @@ void EclairScales::handleDataNotification(uint8_t* data, size_t length) {
 }
 
 void EclairScales::handleConfigNotification(uint8_t* data, size_t length) {
-    if (length < 3) { // 头部（1字节）+ 数据（1字节）+ 校验（1字节）
+    if (length < 3) { // Header (1 byte) + Data (1 byte) + Checksum (1 byte)
         RemoteScales::log("Config notification length too short\n");
         return;
     }
@@ -145,7 +154,7 @@ void EclairScales::handleConfigNotification(uint8_t* data, size_t length) {
     uint8_t header = data[0];
     uint8_t value = data[1];
     uint8_t checksum = data[length - 1];
-    uint8_t calculatedChecksum = calculateXOR(&data[1], length - 2); // 排除头部和校验字节
+    uint8_t calculatedChecksum = calculateXOR(&data[1], length - 2); // Exclude header and checksum byte
 
     if (calculatedChecksum != checksum) {
         RemoteScales::log("Invalid checksum in config notification: calculated %02X, received %02X\n", calculatedChecksum, checksum);
@@ -202,7 +211,7 @@ void EclairScales::sendHeartbeat() {
         return;
     }
 
-    uint8_t heartbeatCommand[] = { 0x00 };  // 示例心跳命令
+    uint8_t heartbeatCommand[] = { 0x00 };  // Example heartbeat command
     sendMessage(EclairMessageType::TIMER_STATUS, heartbeatCommand, sizeof(heartbeatCommand));
     lastHeartbeat = now;
 }

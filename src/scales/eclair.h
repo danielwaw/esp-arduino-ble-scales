@@ -1,19 +1,19 @@
 #pragma once
 #include "remote_scales.h"
-#include "../remote_scales_plugin_registry.h"  // 根据文件结构调整路径
+#include "remote_scales_plugin_registry.h"
 #include <Arduino.h>
 #include <NimBLEDevice.h>
 #include <vector>
 #include <memory>
 
 enum class EclairMessageType : uint8_t {
-    WEIGHT = 0x57,           // 0x57 - 重量数据
-    FLOW_RATE = 0x46,        // 0x46 - 流量率数据
-    TARE_COMMAND = 0x54,     // 0x54 - 去皮命令
-    BATTERY_STATUS = 0x42,   // 0x42 - 电池状态
-    TIMER_STATUS = 0x43,     // 0x43 - 计时器状态（启动/停止）
-    START_TIMER = 0x53,      // 0x53 - 启动计时器命令
-    STOP_TIMER = 0x45        // 0x45 - 停止计时器命令
+    WEIGHT = 0x57,           
+    FLOW_RATE = 0x46,        
+    TARE_COMMAND = 0x54,     
+    BATTERY_STATUS = 0x42,   
+    TIMER_STATUS = 0x43,     
+    START_TIMER = 0x53,      
+    STOP_TIMER = 0x45        
 };
 
 class EclairScales : public RemoteScales {
@@ -27,14 +27,12 @@ public:
     bool tare() override;
 
 private:
-    // 私有成员变量
     NimBLERemoteService* service = nullptr;
     NimBLERemoteCharacteristic* dataCharacteristic = nullptr;
     NimBLERemoteCharacteristic* configCharacteristic = nullptr;
     uint8_t battery = 0;
     uint32_t lastHeartbeat = 0;
 
-    // 私有成员函数
     bool performConnectionHandshake();
     void sendMessage(EclairMessageType msgType, const uint8_t* data, size_t dataLength, bool waitResponse = false);
     void notifyCallback(NimBLERemoteCharacteristic* characteristic, uint8_t* data, size_t length, bool isNotify);
@@ -61,8 +59,7 @@ public:
 private:
     static bool handles(const DiscoveredDevice& device) {
         const std::string& deviceName = device.getName();
-        // 使用 Serial.printf 进行日志输出
-        Serial.printf("Discovered device: %s\n", deviceName.c_str());
+        //Serial.printf("Discovered device: %s\n", deviceName.c_str());
         return !deviceName.empty() && (deviceName.find("ECLAIR-") == 0);
     }
 };
