@@ -129,21 +129,6 @@ void PrecisaScales::handleWeightNotification(uint8_t* pData, size_t length) {
     weight100 = -weight100;
   }
 
-  uint8_t xorByte = pData[length - 1];
-
-  if (xorByte != 0) {
-    uint8_t xorSum = pData[0];
-
-    for (int i = 1; i < length - 1; i++) {
-      xorSum ^= pData[i];
-    }
-
-    if (xorSum != xorByte) {
-      RemoteScales::log("Wrong checksum\n");
-      return;
-    }
-  }
-
   RemoteScales::setWeight(weight100 / 10.f);
   RemoteScales::log("Weight received\n");
 }
