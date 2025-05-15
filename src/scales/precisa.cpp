@@ -123,7 +123,7 @@ void PrecisaScales::readCallback(NimBLERemoteCharacteristic* pCharacteristic,
 }
 
 void PrecisaScales::handleWeightNotification(uint8_t* pData, size_t length) {
-  uint16_t weight100 = ((uint16_t)((pData[8] << 8) | pData[7]));
+  int16_t weight100 = static_cast<int16_t>((uint16_t)((pData[8] << 8) | pData[7]));
 
   if (pData[6] > 0) {
     weight100 = -weight100;
