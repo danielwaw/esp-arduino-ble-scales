@@ -16,7 +16,9 @@ This allows for easy extention of the library for more bluetooth enabled scales.
 * [Difluid microbalance](https://digitizefluid.com/products/microbalance) - [Tested]
 * [Difluid microbalance Ti](https://digitizefluid.com/collections/m-series/products/microbalance-ti) - [Tested]
 * [Eclair](https://makerworld.com/en/models/664430#profileId-591777) - [Tested]
+* [Eureka Precisa](https://www.eureka.co.it/en/accessory/id/187.aspx) - [Tested]
 * [Felicita Arc](http://www.felicitacoffee.com/PRODUCT_1/10.html) - [Tested]
+* [Solo Barista](https://www.bing.com/search?q=solo%20barista%20smart%20coffee%20scale&qs=n&form=QBRE&sp=-1&lq=0&pq=solo%20barista%20smart%20coffee%20s&sc=12-27&sk=&cvid=92C2E651555847349D46CE973F6E1D45) - [Tested]
 * [Timemore Black Mirror DUO](https://www.timemore.com/collections/coffee-scale/products/timemore-coffee-scale-black-mirror-duo) - [Tested]
 * [Varia AKU /Mini](https://www.variabrewing.com/products/varia-aku-scale) - [Tested]
   
