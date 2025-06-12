@@ -50,8 +50,9 @@ public:
 
 private:
   static bool handles(const DiscoveredDevice& device) {
+    const std::string& deviceID = std::string(NimBLEUUID::fromString(device.getManufacturerData()));
     const std::string& deviceName = device.getName();
-    return !deviceName.empty() 
-      && (deviceName.find("CFS-9002") == 0 || deviceName.find("LSJ-001") == 0);
+    return deviceID.find("0x00000000") == 0 ||
+      (!deviceName.empty() && (deviceName.find("CFS-9002") == 0 || deviceName.find("LSJ-001") == 0));
   }
 };
