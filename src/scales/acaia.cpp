@@ -151,7 +151,11 @@ bool AcaiaScales::decodeAndHandleNotification() {
   else if (messageType == AcaiaMessageType::INFO) {
     RemoteScales::log("Got info message: %s\n", RemoteScales::byteArrayToHexString(dataBuffer.data(), messageLength).c_str());
     // This normally means that something went wrong with the establishing a connection so we disconnect.
-    markedForReconnection = true;
+    // For some reason, Acaia Pearl S sends this info message upon connection.
+    // It can safely be ignored; otherwise, the scale will almost never successfully connect.
+    if(RemoteScales::getDeviceName().find("PEARLS")!=0){
+      markedForReconnection = true;
+    }
   }
   else {
     RemoteScales::log("Unknown message type %02X: %s\n", messageType, RemoteScales::byteArrayToHexString(dataBuffer.data(), messageLength).c_str());
