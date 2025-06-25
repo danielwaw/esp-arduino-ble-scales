@@ -23,12 +23,6 @@ bool BookooScales::connect() {
   }
 
   RemoteScales::log("Connecting to %s[%s]\n", RemoteScales::getDeviceName().c_str(), RemoteScales::getDeviceAddress().c_str());
-  bool result = RemoteScales::clientConnect();
-  if (!result) {
-    RemoteScales::clientCleanup();
-    return false;
-  }
-
   if (!performConnectionHandshake()) {
     return false;
   }
