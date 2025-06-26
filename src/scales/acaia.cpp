@@ -148,11 +148,6 @@ bool AcaiaScales::decodeAndHandleNotification() {
   else if (messageType == AcaiaMessageType::STATUS) {
     handleScaleStatusPayload(payload, payloadLength);
   }
-  else if (messageType == AcaiaMessageType::INFO) {
-    RemoteScales::log("Got info message: %s\n", RemoteScales::byteArrayToHexString(dataBuffer.data(), messageLength).c_str());
-    // This normally means that something went wrong with the establishing a connection so we disconnect.
-    markedForReconnection = true;
-  }
   else {
     RemoteScales::log("Unknown message type %02X: %s\n", messageType, RemoteScales::byteArrayToHexString(dataBuffer.data(), messageLength).c_str());
   }
