@@ -12,6 +12,7 @@ This allows for easy extention of the library for more bluetooth enabled scales.
 * [Acaia Lunar](https://acaia.co/collections/coffee-scales/products/lunar_2021) - [Tested]
 * [Acaia Pearl](https://acaia.co/collections/coffee-scales/products/pearl) - [Tested]
 * [Bookoo Themis](https://bookoocoffee.com/shop/bookoo-mini-scale/?coupon=gaggiuino) - [Tested]
+* [Brainslug Scales(DIY)](https://www.pcbway.com/project/shareproject/XJK1310_BT_4d9bca7f.html) - [Tested]
 * [Decent Scale](https://decentespresso.com/decentscale) - [Tested]
 * [Difluid microbalance](https://digitizefluid.com/products/microbalance) - [Tested]
 * [Difluid microbalance Ti](https://digitizefluid.com/collections/m-series/products/microbalance-ti) - [Tested]
