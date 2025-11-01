@@ -24,7 +24,7 @@ This allows for easy extention of the library for more bluetooth enabled scales.
 * [Solobarista](https://item.taobao.com/item.htm?id=848706090408&skuId=5805800327323&spm=a21xtw.29178619.0.0) - [Tested]
 * [Timemore Black Mirror DUO](https://www.timemore.com/collections/coffee-scale/products/timemore-coffee-scale-black-mirror-duo) - [Tested]
 * [Varia AKU /Mini](https://www.variabrewing.com/products/varia-aku-scale) - [Tested]
-* [WeighMyBrew](https://github.com/031devstudios/weighmybru2) - [Untested]
+* [WeighMyBrew](https://github.com/031devstudios/weighmybru2) - [Tested]
   
 Want a specific model? Implement it 🚀 Read on to find out how... 
 
