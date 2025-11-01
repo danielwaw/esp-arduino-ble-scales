@@ -12,6 +12,7 @@ This allows for easy extention of the library for more bluetooth enabled scales.
 * [Acaia Lunar](https://acaia.co/collections/coffee-scales/products/lunar_2021) - [Tested]
 * [Acaia Pearl](https://acaia.co/collections/coffee-scales/products/pearl) - [Tested]
 * [Bookoo Themis](https://bookoocoffee.com/shop/bookoo-mini-scale/?coupon=gaggiuino) - [Tested]
+* [Bookoo Themis Ultra](https://bookoocoffee.com/0dk9un) - [Tested]
 * [Brainslug One(DIY)](https://www.pcbway.com/project/shareproject/XJK1310_BT_4d9bca7f.html) - [Tested]
 * [Brainslug Two(DIY)](https://github.com/banoz/KC230_BT) - [Tested]
 * [Brainslug PorOver(DIY)](https://github.com/banoz/CK2150_BT) - [Tested]
