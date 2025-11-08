@@ -1,7 +1,6 @@
 #pragma once
 #include "remote_scales.h"
 #include "remote_scales_plugin_registry.h"
-#include <Arduino.h>
 #include <NimBLEDevice.h>
 #include <vector>
 #include <memory>

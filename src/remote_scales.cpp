@@ -79,6 +79,14 @@ std::string RemoteScales::byteArrayToHexString(const uint8_t* byteArray, size_t 
   return hexString;
 }
 
+uint32_t RemoteScales::millis() {
+#ifdef ARDUINO
+  return ::millis();
+#elif defined(ESP_PLATFORM)
+  return esp_timer_get_time() / 1000;
+#endif
+  return 0;
+}
 
 // ---------------------------------------------------------------------------------------
 // ------------------------   RemoteScales methods    ------------------------------
