@@ -26,6 +26,7 @@ This allows for easy extention of the library for more bluetooth enabled scales.
 * [Timemore Black Mirror DUO](https://www.timemore.com/collections/coffee-scale/products/timemore-coffee-scale-black-mirror-duo) - [Tested]
 * [Varia AKU /Mini](https://www.variabrewing.com/products/varia-aku-scale) - [Tested]
 * [WeighMyBrew](https://github.com/031devstudios/weighmybru2) - [Tested]
+* [Smart Kitchen Scale / MyScale (Model: KP2048B)](https://de.aliexpress.com/item/1005005916581185.html) - [Tested]
   
 Want a specific model? Implement it 🚀 Read on to find out how... 
 
