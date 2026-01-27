@@ -170,7 +170,7 @@ bool WeighMyBrewScales::performConnectionHandshake() {
 
   sendNotificationRequest();
   RemoteScales::log("Sent notification request\n");
-  lastHeartbeat = millis();
+  lastHeartbeat = RemoteScales::millis();
   return true;
 }
 
@@ -196,7 +196,7 @@ void WeighMyBrewScales::sendHeartbeat() {
     return;
   }
 
-  uint32_t now = millis();
+  uint32_t now = RemoteScales::millis();
   if (now - lastHeartbeat < 2000) {
     return;
   }

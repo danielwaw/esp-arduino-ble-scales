@@ -97,7 +97,7 @@ bool TimemoreScales::decodeAndHandleNotification() {
     // E.g. 78 08 00 00 = 2168 / 10 = 216.8g
 
     //float_t dripperWeight = dataBuffer[1] | (dataBuffer[2] << 8) | (dataBuffer[3] << 16) | (dataBuffer[4] << 24);
-    float_t scaleWeight = dataBuffer[5] | (dataBuffer[6] << 8) | (dataBuffer[7] << 16) | (dataBuffer[8] << 24);
+    uint32_t scaleWeight = dataBuffer[5] | (dataBuffer[6] << 8) | (dataBuffer[7] << 16) | (dataBuffer[8] << 24);
 
     RemoteScales::setWeight(scaleWeight / 10.0f); // Convert to floating point
   }

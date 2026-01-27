@@ -1,6 +1,8 @@
 #pragma once
+#ifdef ARDUINO
+  #include <Arduino.h>
+#endif
 #include <NimBLEDevice.h>
-#include <Arduino.h>
 #include <vector>
 #include <memory>
 #include <lru_cache.h>
@@ -52,6 +54,7 @@ protected:
   void log(std::string msgFormat, ...);
   std::string byteArrayToHexString(const uint8_t* byteArray, size_t length);
 
+  uint32_t millis();
 private:
   using WeightCallback = void (*)(float);
 
