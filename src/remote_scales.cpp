@@ -9,7 +9,7 @@ RemoteScales::RemoteScales(const DiscoveredDevice& device) : device(device) {}
 
 void RemoteScales::log(std::string msgFormat, ...) {
   if (!this->logCallback) return;
-  
+
   va_list args;
   va_start(args, msgFormat);
   int length = vsnprintf(nullptr, 0, msgFormat.c_str(), args); // Find length of string
@@ -44,7 +44,8 @@ bool RemoteScales::clientConnect() {
   clientCleanup();
   log("Connecting to BLE client\n");
   client = NimBLEDevice::createClient(device.getAddress());
-  return client->connect();
+  std::string deviceName = device.getName();
+  return deviceName.find("BOOKOO_SC") == 0 ? client->connect(true, false, false) : client->connect();
 }
 
 void RemoteScales::clientCleanup() {
