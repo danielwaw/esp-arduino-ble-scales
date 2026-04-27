@@ -62,12 +62,22 @@ bool TimemoreNewScales::isConnected() {
 
 void TimemoreNewScales::update() {
     // 状态维护逻辑：如果在此周期发现断线，则触发重新连接
-    // connect() 内部自带了密钥冲突的重试容错机制
     if (!isConnected()) {
-        RemoteScales::log("Device disconnected. Attempting to reconnect...\n");
-        delay(1000); // 延时缓冲，给物理设备一些反应时间
-        if (connect()) {
-            RemoteScales::log("Reconnected to Timemore Dot successfully.\n");
+        // 使用静态变量记录上一次尝试重连的时间
+        static uint32_t lastReconnectAttempt = 0;
+        
+        // 智能节流：断线后，每隔 5 秒才进行一次重连尝试，而不是每毫秒都在死等
+        if (millis() - lastReconnectAttempt > 5000) {
+            RemoteScales::log("Device disconnected. Attempting to reconnect...\n");
+            
+            if (connect()) {
+                RemoteScales::log("Reconnected to Timemore Dot successfully.\n");
+            } else {
+                RemoteScales::log("Reconnect failed. Will retry in 5 seconds.\n");
+            }
+            
+            // 更新最后尝试的时间
+            lastReconnectAttempt = millis();
         }
     }
 }
