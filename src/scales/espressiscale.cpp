@@ -1,4 +1,4 @@
-#include "EspressiScales.h"
+#include "EspressiScale.h"
 #include <iostream>
 
 EspressiScales::EspressiScales(const DiscoveredDevice& device)
@@ -38,7 +38,7 @@ void EspressiScales::update() {
 
 bool EspressiScales::tare() {
   if (!verifyConnected()) return false;
-  // Tare-kommando fra kildekode: [0x03, 0x0F, 0x00, 0x00, 0x00, 0x00, XOR]
+  // Tare-command from sourcecode: [0x03, 0x0F, 0x00, 0x00, 0x00, 0x00, XOR]
   uint8_t payload[] = { 0x03, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x0C };
   writeCharacteristic->writeValue(payload, sizeof(payload), false);
   return true;
@@ -75,19 +75,19 @@ bool EspressiScales::subscribeToNotifications() {
 
 void EspressiScales::readCallback(NimBLERemoteCharacteristic* pCharacteristic,
   uint8_t* pData, size_t length, bool isNotify) {
-  // EspressiScale sender 7 bytes. Byte 0 er 0x03, Byte 1 er 0xCE for vekt[cite: 2]
+  // EspressiScale sends 7 bytes. Byte 0 is 0x03, Byte 1 is 0xCE for weight
   if (length == 7 && pData[0] == 0x03 && pData[1] == 0xCE) {
     handleWeightNotification(pData, length);
   }
 }
 
 void EspressiScales::handleWeightNotification(uint8_t* pData, size_t length) {
-  // Dekoding: Byte 2 (MSB) og Byte 3 (LSB). Vekten er lagret som g * 10[cite: 2]
+  // Decoding: Byte 2 (MSB) and Byte 3 (LSB). Weight saved as g * 10
   int16_t weight10 = static_cast<int16_t>((pData[2] << 8) | pData[3]);
 
-  // Checksum validering basert på kildekodens XOR-logikk[cite: 2]
+  // Checksum validation based on sourcecode XOR-logic
   uint8_t expectedXor = pData[length - 1];
-  uint8_t xorSum = 0x03; // Startverdi for XOR i EspressiScale[cite: 2]
+  uint8_t xorSum = 0x03; // Startvalue for XOR in EspressiScale
   for (int i = 1; i < length - 1; i++) {
     xorSum ^= pData[i];
   }
@@ -97,7 +97,7 @@ void EspressiScales::handleWeightNotification(uint8_t* pData, size_t length) {
     return;
   }
 
-  // Konverterer fra g*10 til g[cite: 2]
+  // Converting from g*10 to g
   RemoteScales::setWeight(weight10 / 10.f);
 }
 
