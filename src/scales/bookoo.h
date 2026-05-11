@@ -21,6 +21,10 @@ public:
   void disconnect() override;
   bool isConnected() override;
   bool tare() override;
+  bool startTimer() override;
+  bool stopTimer() override;
+  bool resetTimer() override;
+  bool tareAndStartTimer() override;
 
 private:
   std::string weightUnits;

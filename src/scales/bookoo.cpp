@@ -65,8 +65,40 @@ bool BookooScales::tare() {
   sendMessage(BookooMessageType::SYSTEM, payload, sizeof(payload));
 
   return true;
-};
+}
 
+bool BookooScales::startTimer() {
+  if (!isConnected()) return false;
+  RemoteScales::log("Start timer sent\n");
+  uint8_t payload[6] = { 0x03, 0x0a, 0x04, 0x00, 0x00, 0x0a };
+  sendMessage(BookooMessageType::SYSTEM, payload, sizeof(payload));
+  return true;
+}
+ 
+bool BookooScales::stopTimer() {
+  if (!isConnected()) return false;
+  RemoteScales::log("Stop timer sent\n");
+  uint8_t payload[6] = { 0x03, 0x0a, 0x05, 0x00, 0x00, 0x0d };
+  sendMessage(BookooMessageType::SYSTEM, payload, sizeof(payload));
+  return true;
+}
+ 
+bool BookooScales::resetTimer() {
+  if (!isConnected()) return false;
+  RemoteScales::log("Reset timer sent\n");
+  uint8_t payload[6] = { 0x03, 0x0a, 0x06, 0x00, 0x00, 0x0c };
+  sendMessage(BookooMessageType::SYSTEM, payload, sizeof(payload));
+  return true;
+}
+ 
+bool BookooScales::tareAndStartTimer() {
+  if (!isConnected()) return false;
+  RemoteScales::log("Tare and start timer sent\n");
+  uint8_t payload[6] = { 0x03, 0x0a, 0x07, 0x00, 0x00, 0x00 };
+  sendMessage(BookooMessageType::SYSTEM, payload, sizeof(payload));
+  return true;
+}
+ 
 //-----------------------------------------------------------------------------------/
 //---------------------------       PRIVATE       -----------------------------------/
 //-----------------------------------------------------------------------------------/

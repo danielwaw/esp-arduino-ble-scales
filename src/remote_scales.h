@@ -39,6 +39,10 @@ public:
   virtual bool connect() = 0;
   virtual void disconnect() = 0;
   virtual void update() = 0;
+  virtual bool startTimer() { return false; }
+  virtual bool stopTimer() { return false; }
+  virtual bool resetTimer() { return false; }
+  virtual bool tareAndStartTimer() { return false; }
 
   ~RemoteScales() { clientCleanup(); }
 protected:
