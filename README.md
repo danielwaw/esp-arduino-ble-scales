@@ -25,6 +25,7 @@ This allows for easy extention of the library for more bluetooth enabled scales.
 * [INSMART 863A](https://www.amazon.com/INSMART-Coffee-Scale-with-Timer/dp/B0FRMQFNJ4) - [Tested]
 * [Solobarista](https://item.taobao.com/item.htm?id=848706090408&skuId=5805800327323&spm=a21xtw.29178619.0.0) - [Tested]
 * [Timemore Black Mirror DUO](https://www.timemore.com/collections/coffee-scale/products/timemore-coffee-scale-black-mirror-duo) - [Tested]
+* [Timemore Black Mirror Dot](https://e.tb.cn/h.RaauU1uixK6rBHE?tk=NKEx5psOlHb) - [Tested]
 * [Varia AKU /Mini](https://www.variabrewing.com/products/varia-aku-scale) - [Tested]
 * [WeighMyBrew](https://github.com/031devstudios/weighmybru2) - [Tested]
 * [Smart Kitchen Scale / MyScale (Model: KP2048B)](https://aliexpress.com/item/1005005916581185.html) - [Tested]
