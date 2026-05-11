@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 
-// 定义 Timemore Dot (Ble2025) 的消息类型
+// Define message types for Timemore Dot (Ble2025)
 enum class TimemoreNewMessageType : uint8_t {
     WEIGHT_DATA = 0x01,
     QUERY_CMD   = 0x02,
@@ -54,26 +54,21 @@ public:
 
 private:
     static bool handles(const DiscoveredDevice& device) {
-    const std::string& deviceName = device.getName();
-    const std::string& mfgData = device.getManufacturerData();
-    
-    std::string mfgHex = "";
-    for (size_t i = 0; i < mfgData.length(); i++) {
-        char hex[4];
-        snprintf(hex, sizeof(hex), "%02X ", (uint8_t)mfgData[i]);
-        mfgHex += hex;
+        const std::string& deviceName = device.getName();
+        const std::string& mfgData = device.getManufacturerData();
+        
+        std::string mfgHex = "";
+        for (size_t i = 0; i < mfgData.length(); i++) {
+            char hex[4];
+            snprintf(hex, sizeof(hex), "%02X ", (uint8_t)mfgData[i]);
+            mfgHex += hex;
+        }
+
+        // General matching condition 1: Name matches (use 'find' to prevent issues with leading spaces)
+        if (!deviceName.empty() && deviceName.find("TIMEMORE_Dot") != std::string::npos) {
+            return true;
+        }
+
+        return false;
     }
-
-    Serial.printf("[SCAN] Name: '%s', MAC: %s, MfgData: %s\n", 
-                  deviceName.empty() ? "UNKNOWN" : deviceName.c_str(), 
-                  device.getAddress().toString().c_str(),
-                  mfgHex.empty() ? "NONE" : mfgHex.c_str());
-
-    // 通用适配条件 1：名字能匹配上 (防止有前导空格，改用 find)
-    if (!deviceName.empty() && deviceName.find("TIMEMORE_Dot") != std::string::npos) {
-        return true;
-    }
-
-    return false;
-}
 };
