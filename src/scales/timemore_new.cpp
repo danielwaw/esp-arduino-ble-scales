@@ -1,7 +1,7 @@
 #include "timemore_new.h"
 #include "remote_scales_plugin_registry.h"
 
-// 使用完整的 128-bit UUID 以确保最高兼容性
+// Use full 128-bit UUIDs to ensure maximum compatibility
 const NimBLEUUID TIMEMORE_NEW_SERVICE_UUID("0000fff0-0000-1000-8000-00805f9b34fb");
 const NimBLEUUID TIMEMORE_NEW_NOTIFY_CHAR_UUID("0000fff1-0000-1000-8000-00805f9b34fb");
 const NimBLEUUID TIMEMORE_NEW_COMMAND_CHAR_UUID("0000fff2-0000-1000-8000-00805f9b34fb");
@@ -19,17 +19,17 @@ bool TimemoreNewScales::connect() {
 
     RemoteScales::log("Connecting to %s [%s]\n", RemoteScales::getDeviceName().c_str(), RemoteScales::getDeviceAddress().c_str());
 
-    // 第一次连接尝试
+    // First connection attempt
     bool result = RemoteScales::clientConnect();
     
     if (!result) {
-        // 【智能容错】：连接失败极有可能是电子秤被重置，导致旧的配对密钥(Bond)失效
+        // [Smart Fault Tolerance]: Connection failure is highly likely due to the scale being reset, causing the old pairing key (Bond) to become invalid
         RemoteScales::log("Connection failed. Attempting to delete old bond and retry...\n");
         
-        // 精准删除这个特定 MAC 地址的本地配对记录
+        // Accurately delete the local pairing record for this specific MAC address
         NimBLEDevice::deleteBond(getDevice().getAddress());
         
-        // 缓冲一下，进行第二次尝试，此时将重新进行安全配对
+        // Buffer slightly and make a second attempt; secure pairing will be re-initiated at this time
         delay(500); 
         result = RemoteScales::clientConnect();
     }
@@ -40,7 +40,7 @@ bool TimemoreNewScales::connect() {
         return false;
     }
 
-    // 执行协议握手
+    // Execute protocol handshake
     if (!performConnectionHandshake()) {
         RemoteScales::log("Handshake failed. Cleaning up.\n");
         RemoteScales::clientCleanup();
@@ -61,12 +61,12 @@ bool TimemoreNewScales::isConnected() {
 }
 
 void TimemoreNewScales::update() {
-    // 状态维护逻辑：如果在此周期发现断线，则触发重新连接
+    // Status maintenance logic: If disconnection is detected in this cycle, trigger reconnection
     if (!isConnected()) {
-        // 使用静态变量记录上一次尝试重连的时间
+        // Use a static variable to record the time of the last reconnection attempt
         static uint32_t lastReconnectAttempt = 0;
         
-        // 智能节流：断线后，每隔 5 秒才进行一次重连尝试，而不是每毫秒都在死等
+        // Smart throttling: After disconnection, attempt to reconnect only once every 5 seconds, rather than busy-waiting every millisecond
         if (millis() - lastReconnectAttempt > 5000) {
             RemoteScales::log("Device disconnected. Attempting to reconnect...\n");
             
@@ -76,7 +76,7 @@ void TimemoreNewScales::update() {
                 RemoteScales::log("Reconnect failed. Will retry in 5 seconds.\n");
             }
             
-            // 更新最后尝试的时间
+            // Update the time of the last attempt
             lastReconnectAttempt = millis();
         }
     }
@@ -88,7 +88,7 @@ bool TimemoreNewScales::tare() {
         return false;
     }
 
-    // 根据官方规范构建去皮包: A5 5A 03 0D 00 00 + CRC
+    // Build tare packet according to official specifications: A5 5A 03 0D 00 00 + CRC
     uint8_t packet[8] = { 
         0xA5, 0x5A, 
         0x03, // CTRL_CMD
@@ -97,8 +97,8 @@ bool TimemoreNewScales::tare() {
     };
     
     uint16_t crc = calculateCRC16(packet, 6);
-    packet[6] = crc & 0xFF;         // 小端序存储 CRC 低字节
-    packet[7] = (crc >> 8) & 0xFF;  // 小端序存储 CRC 高字节
+    packet[6] = crc & 0xFF;         // Store CRC low byte in little-endian format
+    packet[7] = (crc >> 8) & 0xFF;  // Store CRC high byte in little-endian format
 
     RemoteScales::log("Sending tare command...\n");
     commandCharacteristic->writeValue(packet, sizeof(packet), false);
@@ -128,7 +128,7 @@ bool TimemoreNewScales::performConnectionHandshake() {
         return false;
     }
 
-    // 开启设备端的数据通知描述符 (0x2902)
+    // Enable the data notification descriptor (0x2902) on the device
     NimBLERemoteDescriptor* notifyDesc = notifyCharacteristic->getDescriptor(NimBLEUUID((uint16_t)0x2902));
     if (notifyDesc != nullptr) {
         uint8_t value[2] = { 0x01, 0x00 };
@@ -138,11 +138,11 @@ bool TimemoreNewScales::performConnectionHandshake() {
         return false;
     }
 
-    // 发送官方 App 在连接成功后的 6 个初始化查询指令，以唤醒数据流
+    // Send the 6 initialization query commands used by the official App after successful connection to wake up the data stream
     uint8_t initQueries[] = { 19, 8, 5, 2, 6, 12 };
     for (int i = 0; i < 6; i++) {
         sendQueryCommand(initQueries[i]);
-        delay(160); // 严格遵循官方规定的发包间隔
+        delay(160); // Strictly follow the packet sending interval specified by official guidelines
     }
     
     RemoteScales::log("Handshake completed successfully.\n");
@@ -152,7 +152,7 @@ bool TimemoreNewScales::performConnectionHandshake() {
 void TimemoreNewScales::sendQueryCommand(uint8_t queryType) {
     if (commandCharacteristic == nullptr) return;
     
-    // 查询帧格式: A5 5A 02 [type] 00 00 00 00
+    // Query frame format: A5 5A 02 [type] 00 00 00 00
     uint8_t payload[8] = { 
         0xA5, 0x5A, 
         0x02, // QUERY_CMD
@@ -163,17 +163,17 @@ void TimemoreNewScales::sendQueryCommand(uint8_t queryType) {
 }
 
 void TimemoreNewScales::notifyCallback(NimBLERemoteCharacteristic* characteristic, uint8_t* data, size_t length, bool isNotify) {
-    // 将底层接收到的字节数据压入滑动缓冲区
+    // Push the byte data received from the lower layer into the sliding buffer
     dataBuffer.insert(dataBuffer.end(), data, data + length);
     
-    // 循环解析，直到缓冲区内没有完整的有效帧 (防止粘包)
+    // Parse in a loop until there are no complete valid frames in the buffer (preventing packet sticking)
     while (decodeAndHandleNotification());
 }
 
 bool TimemoreNewScales::decodeAndHandleNotification() {
     if (dataBuffer.size() < 2) return false;
 
-    // 寻找有效帧头: A5 5A
+    // Look for valid frame header: A5 5A
     int headerIndex = -1;
     for (size_t i = 0; i < dataBuffer.size() - 1; ++i) {
         if (dataBuffer[i] == 0xA5 && dataBuffer[i+1] == 0x5A) {
@@ -182,49 +182,49 @@ bool TimemoreNewScales::decodeAndHandleNotification() {
         }
     }
 
-    // 没有找到帧头，清空垃圾数据并退出
+    // No frame header found, clear garbage data and exit
     if (headerIndex == -1) {
         dataBuffer.clear(); 
         return false;
     }
     
-    // 擦除帧头之前的所有无效字节
+    // Erase all invalid bytes before the frame header
     if (headerIndex > 0) {
         dataBuffer.erase(dataBuffer.begin(), dataBuffer.begin() + headerIndex); 
     }
 
-    // 此时 dataBuffer 必定以 A5 5A 开头。检查是否包含完整的长度字段 (偏移量 4~5)
+    // At this point, dataBuffer must start with A5 5A. Check if it contains the complete length field (offset 4~5)
     if (dataBuffer.size() < 6) return false;
 
-    // 读取 Data Payload 的长度 (大端序)
+    // Read the length of the Data Payload (Big-Endian)
     uint16_t payloadLen = (dataBuffer[4] << 8) | dataBuffer[5];
-    size_t fullLen = 6 + payloadLen + 2; // 帧头(2) + 类型(2) + 长度字段(2) + 载荷(N) + CRC(2)
+    size_t fullLen = 6 + payloadLen + 2; // Header(2) + Type(2) + Length field(2) + Payload(N) + CRC(2)
     
-    // 缓冲区数据尚不够一个完整的包，继续等待
+    // The buffer data is not yet enough for a complete packet, continue waiting
     if (dataBuffer.size() < fullLen) return false;
 
-    // 校验包类型 (0x01 0x01 = WEIGHT_DATA)
+    // Verify packet type (0x01 0x01 = WEIGHT_DATA)
     if (dataBuffer[2] == 0x01 && dataBuffer[3] == 0x01 && payloadLen >= 9) {
-        // 读取 32-bit 有符号大端序重量原始值 (位于偏移量 6)
+        // Read the 32-bit signed big-endian raw weight value (located at offset 6)
         int32_t rawWeight = (dataBuffer[6] << 24) | 
                             (dataBuffer[7] << 16) | 
                             (dataBuffer[8] <<  8) | 
                             dataBuffer[9];
         
-        // 转换为浮点数重量并推送到 Gaggiuino 框架
+        // Convert to floating-point weight and push to the Gaggiuino framework
         float weight = rawWeight / 10.0f;
         RemoteScales::setWeight(weight);
     }
 
-    // 核心逻辑：当前完整帧已处理完毕，将其从缓冲区彻底擦除
+    // Core logic: The current complete frame has been processed, completely erase it from the buffer
     dataBuffer.erase(dataBuffer.begin(), dataBuffer.begin() + fullLen);
     
-    // 返回 true 以指示外部循环继续检查缓冲区是否还有下一个包
+    // Return true to indicate that the outer loop should continue checking the buffer for the next packet
     return dataBuffer.size() >= 6;
 }
 
 uint16_t TimemoreNewScales::calculateCRC16(const uint8_t* data, size_t length) {
-    // 官方算法：初始值 0，多项式 0xA001，LSB-first
+    // Official algorithm: Initial value 0, polynomial 0xA001, LSB-first
     uint16_t crc = 0x0000; 
     for (size_t i = 0; i < length; i++) {
         crc ^= data[i];
@@ -252,4 +252,6 @@ void TimemoreNewScales::subscribeToNotifications() {
     } else {
         RemoteScales::log("Notify characteristic cannot notify.\n");
     }
+}
+
 }
