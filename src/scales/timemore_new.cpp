@@ -253,5 +253,3 @@ void TimemoreNewScales::subscribeToNotifications() {
         RemoteScales::log("Notify characteristic cannot notify.\n");
     }
 }
-
-}
