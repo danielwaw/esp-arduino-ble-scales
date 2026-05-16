@@ -28,6 +28,7 @@ This allows for easy extention of the library for more bluetooth enabled scales.
 * [Varia AKU /Mini](https://www.variabrewing.com/products/varia-aku-scale) - [Tested]
 * [WeighMyBrew](https://github.com/031devstudios/weighmybru2) - [Tested]
 * [Smart Kitchen Scale / MyScale (Model: KP2048B)](https://aliexpress.com/item/1005005916581185.html) - [Tested]
+* [EspressiScale] (https://www.espressiscale.com)
   
 Want a specific model? Implement it 🚀 Read on to find out how... 
 
