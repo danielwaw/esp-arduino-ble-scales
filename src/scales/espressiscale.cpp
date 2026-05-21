@@ -1,4 +1,4 @@
-#include "EspressiScale.h"
+#include "espressiscale.h"
 #include <iostream>
 
 EspressiScales::EspressiScales(const DiscoveredDevice& device)
