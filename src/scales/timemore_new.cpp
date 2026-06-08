@@ -19,6 +19,11 @@ bool TimemoreNewScales::connect() {
 
     RemoteScales::log("Connecting to %s [%s]\n", RemoteScales::getDeviceName().c_str(), RemoteScales::getDeviceAddress().c_str());
 
+    // [Fix] Dynamically enable secure bonding parameters to fulfill Timemore Dot requirements
+    NimBLEDevice::setSecurityAuth(true, false, true);
+    // This perfectly simulates the 'createBond()' behavior found in the official Android app
+    NimBLEDevice::setSecurityIOCap(BLE_HS_IO_NO_INPUT_OUTPUT);
+
     // First connection attempt
     bool result = RemoteScales::clientConnect();
     
